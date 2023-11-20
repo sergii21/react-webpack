@@ -1,3 +1,5 @@
-const Hello = () => <h1>Hello from React with Typescript!</h1>;
+import UserList from "./user/UserList";
 
-export default Hello;
+const App = () => <UserList/>;
+
+export default App;
