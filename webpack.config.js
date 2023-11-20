@@ -1,45 +1,48 @@
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.tsx",
   output: {
-    filename: "[name]-boundle.js",
-    path: path.resolve(__dirname, "public"),
-    publicPath: "/",
-  },
-  mode: "development",
-  devtool: "source-map",
-  devServer: {
-    hot: true,
+    filename: "main.js",
+    path: path.resolve(__dirname, "build"),
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: [{ loader: "babel-loader" }],
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
+        use: ["babel-loader"],
       },
       {
-        test: /\.css$/,
-        use: [{ loader: "style-loader" }, { loader: "css-loader" }],
+        test: /\.(ts|tsx)$/,
+        loader: "ts-loader",
       },
       {
-        test: /\.html$/,
+        test: /\.s[ac]ss$/i,
         use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "[name].html",
-            },
-          },
-          {
-            loader: "extract-loader",
-          },
-          {
-            loader: "html-loader",
-          },
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
         ],
-      },
+      }
     ],
+  },
+  resolve: {
+    extensions: ["*", ".js", ".jsx", ".ts", ".tsx"],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "public", "index.html"),
+    }),
+  ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "build"),
+    },
+    port: 3000,
   },
 };
